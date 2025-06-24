@@ -18,13 +18,10 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
+import io.quarkus.arc.DefaultBean;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
@@ -45,19 +42,25 @@ import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.jpa.model.ProcessInstanceErrorEntity;
 import org.kie.kogito.index.json.JsonUtils;
+import org.kie.kogito.index.model.CancelledType;
 import org.kie.kogito.index.model.MilestoneStatus;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 
-import io.quarkus.arc.DefaultBean;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED;
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ERROR;
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_EXIT;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_OBSOLETE;
+import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_SKIPPED;
 import static org.kie.kogito.index.DateTimeUtils.toZonedDateTime;
 
 @ApplicationScoped
@@ -153,9 +156,15 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
     }
 
     private void indexNode(ProcessInstanceEntity pi, ProcessInstanceNodeEventBody data) {
-        pi.getNodes().stream().filter(n -> n.getId().equals(data.getNodeInstanceId())).findAny().ifPresentOrElse(n -> updateNode(n, data), () -> createNode(pi, data));
+        pi.getNodes().stream()
+                .filter(n -> n.getId().equals(data.getNodeInstanceId()))
+                .findAny()
+                .ifPresentOrElse(n -> updateNode(n, data), () -> createNode(pi, data));
         if ("MilestoneNode".equals(data.getNodeType())) {
-            pi.getMilestones().stream().filter(n -> n.getId().equals(data.getNodeInstanceId())).findAny().ifPresentOrElse(n -> updateMilestone(n, data), () -> createMilestone(pi, data));
+            pi.getMilestones().stream()
+                    .filter(n -> n.getId().equals(data.getNodeInstanceId()))
+                    .findAny()
+                    .ifPresentOrElse(n -> updateMilestone(n, data), () -> createMilestone(pi, data));
         }
     }
 
@@ -193,6 +202,18 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         }
         ZonedDateTime eventDate = toZonedDateTime(body.getEventDate());
         switch (body.getEventType()) {
+            case EVENT_TYPE_ABORTED:
+                nodeInstance.setCancelledType(CancelledType.ABORTED);
+                break;
+            case EVENT_TYPE_SKIPPED:
+                nodeInstance.setCancelledType(CancelledType.SKIPPED);
+                break;
+            case EVENT_TYPE_OBSOLETE:
+                nodeInstance.setCancelledType(CancelledType.OBSOLETE);
+                break;
+            case EVENT_TYPE_ERROR:
+                nodeInstance.setCancelledType(CancelledType.ERROR);
+                break;
             case EVENT_TYPE_ENTER:
                 nodeInstance.setEnter(eventDate);
                 break;
@@ -246,6 +267,7 @@ public class ProcessInstanceEntityStorage extends AbstractJPAStorageFetcher<Stri
         // SLA does nothing for now
     }
 
+    @Override
     public Set<StorageServiceCapability> capabilities() {
         return EnumSet.of(StorageServiceCapability.COUNT);
     }

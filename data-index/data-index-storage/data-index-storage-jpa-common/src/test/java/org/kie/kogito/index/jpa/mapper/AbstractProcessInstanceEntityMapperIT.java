@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.index.jpa.mapper;
 
-import java.time.ZonedDateTime;
-import java.util.Set;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.model.MilestoneEntity;
@@ -28,15 +28,14 @@ import org.kie.kogito.index.jpa.model.MilestoneEntityId;
 import org.kie.kogito.index.jpa.model.NodeInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntity;
 import org.kie.kogito.index.jpa.model.ProcessInstanceErrorEntity;
+import org.kie.kogito.index.model.CancelledType;
 import org.kie.kogito.index.model.Milestone;
 import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import jakarta.inject.Inject;
+import java.time.ZonedDateTime;
+import java.util.Set;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
@@ -44,9 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractProcessInstanceEntityMapperIT {
 
-    ObjectMapper jsonMapper = new ObjectMapper();
-    ProcessInstance processInstance = new ProcessInstance();
-    ProcessInstanceEntity processInstanceEntity = new ProcessInstanceEntity();
+    private ObjectMapper jsonMapper = new ObjectMapper();
+    private ProcessInstance processInstance = new ProcessInstance();
+    private ProcessInstanceEntity processInstanceEntity = new ProcessInstanceEntity();
 
     @Inject
     ProcessInstanceEntityMapper mapper;
@@ -55,6 +54,7 @@ public abstract class AbstractProcessInstanceEntityMapperIT {
     void setup() {
         String nodeInstanceId = "testNodeInstanceId";
         String nodeInstanceName = "testNodeInstanceName";
+        CancelledType cancelledType = CancelledType.ERROR;
         String nodeInstanceNodeId = "testNodeInstanceNodeId";
         String nodeInstanceType = "testNodeInstanceType";
         String nodeInstanceDefinitionId = "testNodeInstanceDefinitionId";
@@ -91,6 +91,7 @@ public abstract class AbstractProcessInstanceEntityMapperIT {
         nodeInstance.setType(nodeInstanceType);
         nodeInstance.setNodeId(nodeInstanceNodeId);
         nodeInstance.setName(nodeInstanceName);
+        nodeInstance.setCancelledType(cancelledType);
 
         ProcessInstanceError processInstanceError = new ProcessInstanceError();
         processInstanceError.setMessage(processInstanceErrorMessage);
@@ -131,6 +132,7 @@ public abstract class AbstractProcessInstanceEntityMapperIT {
         nodeInstanceEntity.setNodeId(nodeInstanceNodeId);
         nodeInstanceEntity.setType(nodeInstanceType);
         nodeInstanceEntity.setProcessInstance(processInstanceEntity);
+        nodeInstanceEntity.setCancelledType(cancelledType);
 
         ProcessInstanceErrorEntity processInstanceErrorEntity = new ProcessInstanceErrorEntity();
         processInstanceErrorEntity.setMessage(processInstanceErrorMessage);

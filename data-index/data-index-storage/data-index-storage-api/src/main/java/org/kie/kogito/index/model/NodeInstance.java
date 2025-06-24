@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.index.model;
 
-import java.time.ZonedDateTime;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.ZonedDateTime;
 
 public class NodeInstance {
 
@@ -43,6 +43,8 @@ public class NodeInstance {
     private Boolean retrigger;
 
     private String errorMessage;
+
+    private CancelledType cancelledType;
 
     public Boolean isRetrigger() {
         return retrigger;
@@ -125,6 +127,14 @@ public class NodeInstance {
 
     public void setSlaDueDate(ZonedDateTime slaDueDate) {
         this.slaDueDate = slaDueDate;
+    }
+
+    public CancelledType getCancelledType() {
+        return cancelledType;
+    }
+
+    public void setCancelledType(CancelledType cancelledType) {
+        this.cancelledType = cancelledType;
     }
 
     @Override
