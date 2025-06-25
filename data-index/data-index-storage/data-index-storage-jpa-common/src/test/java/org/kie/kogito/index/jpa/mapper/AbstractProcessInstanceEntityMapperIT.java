@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.index.jpa.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.inject.Inject;
+import java.time.ZonedDateTime;
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.jpa.model.MilestoneEntity;
@@ -34,8 +34,10 @@ import org.kie.kogito.index.model.NodeInstance;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceError;
 
-import java.time.ZonedDateTime;
-import java.util.Set;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import jakarta.inject.Inject;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;

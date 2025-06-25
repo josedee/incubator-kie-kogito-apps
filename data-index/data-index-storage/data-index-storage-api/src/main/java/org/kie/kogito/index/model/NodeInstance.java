@@ -18,9 +18,9 @@
  */
 package org.kie.kogito.index.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.ZonedDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class NodeInstance {
 

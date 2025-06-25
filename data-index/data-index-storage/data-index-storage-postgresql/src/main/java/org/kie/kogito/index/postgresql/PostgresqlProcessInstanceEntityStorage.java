@@ -18,8 +18,9 @@
  */
 package org.kie.kogito.index.postgresql;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import java.util.EnumSet;
+import java.util.Set;
+
 import org.kie.kogito.index.jpa.mapper.ProcessInstanceEntityMapper;
 import org.kie.kogito.index.jpa.model.ProcessInstanceEntityRepository;
 import org.kie.kogito.index.jpa.storage.ProcessInstanceEntityStorage;
@@ -27,8 +28,8 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 import org.kie.kogito.persistence.api.query.Query;
 
-import java.util.EnumSet;
-import java.util.Set;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class PostgresqlProcessInstanceEntityStorage extends ProcessInstanceEntityStorage {

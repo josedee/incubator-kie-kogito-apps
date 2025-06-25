@@ -18,10 +18,13 @@
  */
 package org.kie.kogito.index.jpa.storage;
 
-import io.quarkus.arc.DefaultBean;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.kie.kogito.event.process.MultipleProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceDataEvent;
 import org.kie.kogito.event.process.ProcessInstanceErrorDataEvent;
@@ -48,12 +51,11 @@ import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.storage.ProcessInstanceStorage;
 import org.kie.kogito.persistence.api.StorageServiceCapability;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import io.quarkus.arc.DefaultBean;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ABORTED;
 import static org.kie.kogito.event.process.ProcessInstanceNodeEventBody.EVENT_TYPE_ENTER;
