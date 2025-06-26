@@ -44,7 +44,6 @@ public class PostgresqlProcessInstanceEntityStorage extends ProcessInstanceEntit
         return new PostgresqlJsonJPAQuery<>(repository, mapToModel, entityClass);
     }
 
-    @Override
     public Set<StorageServiceCapability> capabilities() {
         return EnumSet.allOf(StorageServiceCapability.class);
     }

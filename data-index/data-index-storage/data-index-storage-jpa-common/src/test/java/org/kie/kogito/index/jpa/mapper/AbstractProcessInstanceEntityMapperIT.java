@@ -45,9 +45,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractProcessInstanceEntityMapperIT {
 
-    private ObjectMapper jsonMapper = new ObjectMapper();
-    private ProcessInstance processInstance = new ProcessInstance();
-    private ProcessInstanceEntity processInstanceEntity = new ProcessInstanceEntity();
+    ObjectMapper jsonMapper = new ObjectMapper();
+    ProcessInstance processInstance = new ProcessInstance();
+    ProcessInstanceEntity processInstanceEntity = new ProcessInstanceEntity();
 
     @Inject
     ProcessInstanceEntityMapper mapper;
